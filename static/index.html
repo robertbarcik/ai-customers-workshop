@@ -788,8 +788,7 @@
 
   <div x-show="vision.result && !vision.loading">
     <!-- Stats row -->
-    <template x-if="vision.result">
-      <div>
+    <div x-show="vision.result">
         <div class="stats-row" style="padding: 0 0 16px;">
           <div class="stat"><span class="stat-value" x-text="vision.result.stats?.total_elements"></span> elements</div>
           <div class="stat">Text ratio: <span class="stat-value" x-text="((vision.result.stats?.text_to_html_ratio || 0) * 100).toFixed(1) + '%'"></span></div>
@@ -924,7 +923,7 @@
           </div>
         </div>
       </div>
-    </template>
+    </div>
   </div>
 </div>
 
@@ -1069,62 +1068,52 @@
 
   <!-- Audit results -->
   <div x-show="audit.result && !audit.loading">
-    <template x-if="audit.result">
-      <div>
-        <div class="results-grid">
-          <!-- Score overview -->
-          <div class="card" style="text-align: center;">
-            <div class="audit-grade" :style="'color:' + scoreColor(audit.result.audit?.overall_score)" x-text="audit.result.audit?.grade || '?'"></div>
-            <div class="score-big" :style="'color:' + scoreColor(audit.result.audit?.overall_score)">
-              <span x-text="audit.result.audit?.overall_score ?? '?'"></span><span style="font-size: 24px; color: var(--text-secondary);">/100</span>
-            </div>
-            <div class="score-label" style="margin-top: 8px;">Overall Agent Readiness</div>
+    <div x-show="audit.result">
+      <div class="results-grid">
+        <!-- Score overview -->
+        <div class="card" style="text-align: center;">
+          <div class="audit-grade" :style="'color:' + scoreColor(audit.result?.audit?.overall_score)" x-text="audit.result?.audit?.grade || '?'"></div>
+          <div class="score-big" :style="'color:' + scoreColor(audit.result?.audit?.overall_score)">
+            <span x-text="audit.result?.audit?.overall_score ?? '?'"></span><span style="font-size: 24px; color: var(--text-secondary);">/100</span>
           </div>
-
-          <!-- Top improvements -->
-          <div class="card">
-            <div class="card-title">Top Improvements</div>
-            <template x-if="audit.result.audit?.top_3_improvements?.length">
-              <ol class="improvements-list">
-                <template x-for="imp in audit.result.audit.top_3_improvements">
-                  <li x-text="imp"></li>
-                </template>
-              </ol>
-            </template>
-          </div>
+          <div class="score-label" style="margin-top: 8px;">Overall Agent Readiness</div>
         </div>
 
-        <!-- Category scores -->
+        <!-- Top improvements -->
         <div class="card">
-          <div class="card-title">Category Breakdown</div>
-          <template x-if="audit.result.audit?.categories?.length">
-            <div>
-              <template x-for="cat in audit.result.audit.categories">
-                <div style="margin-bottom: 16px;">
-                  <div class="score-bar">
-                    <span class="score-bar-label" x-text="cat.name"></span>
-                    <div class="score-bar-track">
-                      <div class="score-bar-fill" :style="'width:' + (cat.score*10) + '%;background:' + scoreColor(cat.score*10)"></div>
-                    </div>
-                    <span class="score-bar-value" x-text="cat.score + '/10'"></span>
-                  </div>
-                  <div style="font-size: 12px; color: var(--text-secondary); padding-left: 148px;" x-text="cat.detail"></div>
-                  <template x-if="cat.suggestions?.length">
-                    <div style="padding-left: 148px; margin-top: 4px;">
-                      <template x-for="s in cat.suggestions">
-                        <div style="font-size: 12px; color: var(--accent); padding: 2px 0;">
-                          &rarr; <span x-text="s"></span>
-                        </div>
-                      </template>
-                    </div>
-                  </template>
+          <div class="card-title">Top Improvements</div>
+          <ol class="improvements-list" x-show="audit.result?.audit?.top_3_improvements?.length">
+            <template x-for="imp in (audit.result?.audit?.top_3_improvements || [])">
+              <li x-text="imp"></li>
+            </template>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Category scores -->
+      <div class="card" x-show="audit.result?.audit?.categories?.length">
+        <div class="card-title">Category Breakdown</div>
+        <template x-for="cat in (audit.result?.audit?.categories || [])">
+          <div style="margin-bottom: 16px;">
+            <div class="score-bar">
+              <span class="score-bar-label" x-text="cat.name"></span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" :style="'width:' + (cat.score*10) + '%;background:' + scoreColor(cat.score*10)"></div>
+              </div>
+              <span class="score-bar-value" x-text="cat.score + '/10'"></span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary); padding-left: 148px;" x-text="cat.detail"></div>
+            <div x-show="cat.suggestions?.length" style="padding-left: 148px; margin-top: 4px;">
+              <template x-for="s in (cat.suggestions || [])">
+                <div style="font-size: 12px; color: var(--accent); padding: 2px 0;">
+                  &rarr; <span x-text="s"></span>
                 </div>
               </template>
             </div>
-          </template>
-        </div>
+          </div>
+        </template>
       </div>
-    </template>
+    </div>
   </div>
 </div>
 
